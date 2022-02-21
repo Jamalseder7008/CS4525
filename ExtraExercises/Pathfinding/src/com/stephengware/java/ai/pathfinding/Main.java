@@ -29,7 +29,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		// Choose a map.
-		Map map = Map.MAP_4;
+		Map map = Map.MAP_3;
 		// Step 0: Initialize the set of visited locations and the frontier.
 		HashSet<Location> visited = new HashSet<Location>();
 		PriorityQueue<Path> frontier = new PriorityQueue<Path>();
@@ -81,7 +81,11 @@ public class Main {
 						(manhattan(
 							neighbor, 
 							map.flag)
+							+ manhattan(
+								map.robot, 
+								neighbor)
 							)
+
 						);
 				}
 			}
