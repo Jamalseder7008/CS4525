@@ -29,7 +29,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		// Choose a map.
-		Map map = Map.MAP_3;
+		Map map = Map.MAP_6;
 		// Step 0: Initialize the set of visited locations and the frontier.
 		HashSet<Location> visited = new HashSet<Location>();
 		PriorityQueue<Path> frontier = new PriorityQueue<Path>();
@@ -77,16 +77,19 @@ public class Main {
 				if (!visited.contains(neighbor)){
 					//current.addToPath(neighbor);
 					frontier.push(
-						new Path(neighbor),
-						(manhattan(
-							neighbor, 
-							map.flag)
-							+ manhattan(
-								map.robot, 
-								neighbor)
+						current.addToPath(neighbor),
+						(
+							manhattan(     //h(n) heuristic to the goal
+								neighbor, 
+								map.flag
 							)
-
-						);
+							+ 
+							manhattan(    //g(n) actual steps taken from the start of path
+								map.robot, 
+								neighbor
+							)
+						)
+					);
 				}
 			}
 			
