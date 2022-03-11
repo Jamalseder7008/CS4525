@@ -29,7 +29,7 @@ public class Test {
 				//new Human(),
 				//new Human(),
 				new MyBot(),
-				new RandomBot(),
+				//new RandomBot(),
 				new GreedyBot(),
 				//new NoviceBot(),
 				//new BeginnerBot(),

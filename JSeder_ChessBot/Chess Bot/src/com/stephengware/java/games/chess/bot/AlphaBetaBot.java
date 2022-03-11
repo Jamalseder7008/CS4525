@@ -8,98 +8,99 @@ import com.stephengware.java.games.chess.state.State;
 
 public class AlphaBetaBot{
 
-    public static double findMax(Result root, double alpha, double beta, int charlie, Player delta) {
+	/**
+	 * 
+	 * Takes initial @param root which is of the Result class then takes 
+	 * @param depthLimit is the depth limit of the amount of turns expected to view
+	 * @param myTurn is the player whose turn it is to choose a move in the root of the main function
+	 * 
+	 *  */ 
+
+    public static Result findMax(Result root, Result alpha, Result beta, int depthLimit, Player myTurn) {
 		// First, check if this node is a leaf node (i.e. the game is over)
 		// using Tree#state#isTerminal().  If so, simply return the utility of
 		// this state.
-		if(charlie == root.state.turn){
-			return Utility.materialCalculator(root.state);
-		}
-		// if(root.state.over){
-		// 	return Utility.materialCalculator(root.state);
-		// }
-		if((delta == root.state.player.other() && charlie-1 == root.state.turn)) {
-			return Utility.materialCalculator(root.state);
+		if( (root.state.over == true) || (depthLimit == root.state.turn &&  myTurn == root.state.player)) {
+			return new Result(root.state, Utility.materialCalculator(root.state));
 		}
 		
 		// If this node is not a leaf, then we need to expand all of its
 		// children and find the one with the highest minimum utility value.
-		// Start with the lowest possible number, Double#NEGATIVE_INFINITY and
-		// work your way up from there.
+		// Start with the lowest possible number
 		double max = Double.NEGATIVE_INFINITY;
+		Result bestChild = root;
 
-        //gets children nodes
-        Iterator<State> iterator = root.state.next().iterator();
-		//A child node has been breached
-		
-
-		// You can check if a node has more children that have not yet been
-		// explored using GameTree#hasNextChild().
+		Iterator<State> iterator = root.state.next().iterator();
 		while(!root.state.searchLimitReached() && iterator.hasNext()){
-			// You can get the next unexplored child node with GameTree#getNextChild().
+			
 			State child = iterator.next();
-            Result childu = new Result(child, Utility.materialCalculator(child));
+			Result childu = new Result(child, Utility.materialCalculator(child));
 			
 			// Find the lowest possible utility value the child node can have.
-			childu.utility = findMin(childu, alpha, beta, charlie, delta);
-
-			
+			childu = findMin(childu, alpha, beta, depthLimit, myTurn);
 			// Update 'max' based on this new information.  'max' should always hold the
 			// largest value we have discovered so far.
-			
+			if( childu.utility == max(max, childu.utility)){
+				
+				bestChild = childu;
+			}
 			max = max(max, childu.utility);
+			
 
-            if (max >= beta){
-                return max;
-            }
-            alpha = max(alpha, max);
+			if (max > beta.utility){
+				return new Result(bestChild.state, max);
+			}
+			alpha = new Result(bestChild.state, max(alpha.utility, max));
 		}
-	
-		// Return the highest utility value of all the children nodes.
-		return max;
-	}
 
-    public static double findMin(Result root, double alpha, double beta, int charlie, Player delta) {
+		return new Result(bestChild.state, max);
+	}
+	
+
+
+    public static Result findMin(Result root, Result alpha, Result beta, int depthLimit, Player myTurn) {
 		// First, check if this node is a leaf node (i.e. the game is over)
 		// isTerminal().  If so, simply return the utility of
 		// this state.
 		
-		if(charlie == root.state.turn || (delta == root.state.player.other() && charlie-1 == root.state.turn)) { 
+		if( (root.state.over == true) || (myTurn == root.state.player && depthLimit == root.state.turn)) { 
 			//first turn will be 0 so skip
-			return Utility.materialCalculator(root.state);
+			return new Result(root.state,  Utility.materialCalculator(root.state));
 		}
 		// If this node is not a leaf, then we need to expand all of its
 		// children and find the one with the highest minimum utility value.
 		// Start with the lowest possible number, Double#NEGATIVE_INFINITY and
 		// work your way up from there.
 		double min = Double.POSITIVE_INFINITY;
-		
-        //gets children nodes
-        Iterator<State> iterator = root.state.next().iterator();
-		//A depth of children has been breached.
-		
+		Result bestChild = root;
 		// You can check if a node has more children that have not yet been
 		// explored using iterator.hasNext().
+	
+
+		Iterator<State> iterator = root.state.next().iterator();
 		while(!root.state.searchLimitReached() && iterator.hasNext()){
 			// You can get the next unexplored child node with GameTree#getNextChild().
 			State child = iterator.next();
-            Result childu = new Result(child, Utility.materialCalculator(child));
+			
+			Result childu = new Result(child, Utility.materialCalculator(child));
 			
 			// Find the highest possible utility value the child node can have.
-			childu.utility = findMax(childu, alpha, beta, charlie, delta);
+			childu = findMax(childu, alpha, beta, depthLimit, myTurn);
 			
 			// Update 'min' based on this new information.  'min' should always hold the
 			// smallest value we have discovered so far.
-			
+			if( childu.utility == min(min, childu.utility)){
+				bestChild = childu;
+			}
 			min = min(min, childu.utility);
 
-            if(min <= alpha){
-                return min;
-            }
-            beta = min(beta, min);
+			if(min < alpha.utility){
+				return new Result(bestChild.state, min);
+			}
+			beta = new Result(bestChild.state, min(beta.utility, min));
 		}
-		// Return the lowest utility value of all the children nodes.
-		return min;
+	
+		return new Result(bestChild.state, min);
 	}
 
     private static double max(double best, double child_value) {
