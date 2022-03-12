@@ -1,5 +1,4 @@
 package com.stephengware.java.games.chess.bot;
-import java.util.Iterator;
 // import java.io.Console;
 import com.stephengware.java.games.chess.state.*;
 
@@ -7,49 +6,26 @@ public class Utility {
 
     //check the current Utility of a move
 
-    public static double check(State child){
-        double value = 0;
-        if (child.check == true){
-            if (child.player == Player.WHITE){
-                value -= .20;
-            }
-            else{
-                value += .20; 
-            }
-            Iterator<State> iterator = child.next().iterator();
-            while(!child.searchLimitReached() && iterator.hasNext()){
-                //update nextChild
-                State thisChild = iterator.next();
-                double thisUtility = materialCalculator(thisChild);
-                if (child.player == Player.WHITE){
-                    if(thisUtility >= value){
-                        value = thisUtility;
-                    }
-                }
-                else if (child.player == Player.BLACK){
-                    if(thisUtility <= value){
-                        value = thisUtility;
-                    }
-                }
-                
-            }
-        }
-        return value;
-    }
-
     public static double materialCalculator(State child){
 
         double value = 0;
 		double whiteBishops = 0;
         double blackBishops = 0;
+        double minorPiecesWhite = 0;
+        double minorPiecesBlack = 0;
+        double whitePawns = 0;
+        double blackPawns = 0;
+        
+        double majorPiecesWhite = 0;
+        double majorPiecesBlack = 0;
         
 
         if (child.check == true){
             if (child.player == Player.WHITE){
-                value -= .75;
+                value -= .1;
             }
             else{
-                value += .75; 
+                value += .1; 
             }
         
         }
@@ -64,12 +40,23 @@ public class Utility {
                 //this means checkmate for the current player
             }
             else{
-                if(child.player == Player.WHITE){
-                    value += 200;
+                if(child.board.countPieces(child.player)-2 > child.board.countPieces(child.player.other())){
+                    if(child.player == Player.WHITE){
+                        value -= 100;
+                    }
+                    else{
+                        value += 100;
+                    }
                 }
                 else{
-                    value -= 200;
+                    if(child.player == Player.WHITE){
+                        value -= 100;
+                    }
+                    else{
+                        value += 100;
+                    }
                 }
+                
                 //this means stalemate
             }
             
@@ -85,19 +72,31 @@ public class Utility {
                     // }
                     if(child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass()) && 
                             child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
-                        value += 1;
+                        value += .75;
+                    }
+                    else if(child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
+                        value += .75;
+                    }
+                    else if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
+                        value += .75;
+                    }
+                    else if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass())){
+                        value += .75;
                     }
                     else if(child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass())){
-                        value += .75;
+                        value += .5;
                     }
                     else if(child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
-                        value += .75;
+                        value += .5;
                     }
                     else if(child.board.pieceAt(0, piece.rank+1, piece.player, piece.getClass()) || child.board.pieceAt(7, piece.rank, piece.player, piece.getClass())){
-                        value += .25;
+                        value += .125;
                     }
                     else{
-                        value += .5;
+                        value += .25;
                     }
                     // if(piece.rank > 1){
                     //     value -= (piece.rank/8);
@@ -112,19 +111,31 @@ public class Utility {
                     // }
                     if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass()) && 
                             child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
-                        value -= 1;
+                        value -= .75;
+                    }
+                    else if(child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
+                        value -= .75;
+                    }
+                    else if(child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass())){
+                        value -= .75;
+                    }
+                    else if(child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
+                        value -= .75;
                     }
                     else if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass())){
-                        value -= .75;
+                        value -= .5;
                     }
                     else if(child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
-                        value -= .75;
+                        value -= .5;
                     }
                     else if(child.board.pieceAt(0, piece.rank+1, piece.player, piece.getClass()) || child.board.pieceAt(7, piece.rank, piece.player, piece.getClass())){
-                        value -= .25;
+                        value -= .125;
                     }
                     else{
-                        value -= .5;
+                        value -= .25;
                     }
                     
                     // if(piece.rank < 6){
@@ -150,6 +161,7 @@ public class Utility {
                     if(child.turn > 20){
                         value += 2;
                     }
+                    minorPiecesWhite += 1;
                     
 		
                 } else{
@@ -164,6 +176,7 @@ public class Utility {
                     if(child.turn > 20){
                         value -= 2;
                     }
+                    minorPiecesBlack += 1;
 		
                 }
 		
@@ -175,11 +188,13 @@ public class Utility {
 		
                     value += 3;
                     whiteBishops += 1;
+                    minorPiecesWhite += 1;
 		
                 } else{
 		
                     value -= 3;
                     blackBishops += 1;
+                    minorPiecesBlack += 1;
 		
                 }
 		
@@ -190,9 +205,9 @@ public class Utility {
                 if (piece.player == Player.WHITE){
                     boolean emptyFile = true;
                     value += 5;
-                    if(child.board.countPieces() < 18){
-                        value += 3;
-                    }
+                    // if(child.board.countPieces() < 22){
+                    //     value += 3;
+                    // }
                     for(int i = 0; i < 8; i++){
                         if(child.board.pieceAt(piece.file, piece.rank+i)){
                             emptyFile = false;
@@ -201,22 +216,24 @@ public class Utility {
                     if(emptyFile == true){
                         value += 1;
                     }
+                    majorPiecesWhite += 1;
                     
 		
                 } else{
                     boolean emptyFile = true;
                     value -= 5;
-                    if(child.board.countPieces() < 18){
-                        value -= 3;
-                    }
+                    // if(child.board.countPieces() < 22){
+                    //     value -= 3;
+                    // }
                     for(int i = 0; i < 8; i++){
                         if(child.board.pieceAt(piece.file, piece.rank+i)){
                             emptyFile = false;
                         }
                     }
                     if(emptyFile == true){
-                        value += 1;
+                        value -= 1;
                     }
+                    majorPiecesBlack += 1;
 		
                 }
 		
@@ -226,17 +243,19 @@ public class Utility {
 		
                 if (piece.player == Player.WHITE){
 		
-                    value += 9;
+                    value += 10;
                     if(child.turn > 11){
                         value += 3;
                     }
+                    majorPiecesWhite +=1;
 		
                 } else{
 		
-                    value -= 9;
+                    value -= 10;
                     if(child.turn > 11){
-                        value += 3;
+                        value -= 3;
                     }
+                    majorPiecesBlack += 1;
 		
                 }
 		
@@ -247,38 +266,32 @@ public class Utility {
                 if (piece.player == Player.WHITE){
                     
                     if(!child.board.hasMoved(piece)){
-                        value += 21;
-                    }
-                    if(!child.board.pieceAt(piece.file, 0, Player.WHITE, piece.getClass())){
                         value += 1;
                     }
-                    else{
-                        value += 20;
+                    if(!child.board.pieceAt(piece.file, 0, Player.WHITE, piece.getClass())){
+                        value -= 1;
                     }
+                    
+                    value += 20;
+                    
                     
 		
                 } else{
 
                     if(!child.board.hasMoved(piece)){
-                        value -= 21;
+                        value -= 1;
                     }
-                    else{
-                        value -= 20;
+                    if(!child.board.pieceAt(piece.file, 0, Player.BLACK, piece.getClass())){
+                        value += 1;
                     }
+                   
+                    value -= 20;
+                    
                 }
 		
             }
 		
         }
-        // if(child.movesUntilDraw < 2){
-        //     if(child.player == Player.WHITE){
-        //         value -= 30;
-        //     }
-        //     else{
-        //         value += 30;  
-        //     }
-           
-        // }
         
         if(whiteBishops == 2){
             value += 1;
@@ -286,6 +299,20 @@ public class Utility {
         if(blackBishops == 2){
             value -= 1;
         }
+        // if(child.player == Player.WHITE && majorPiecesWhite > majorPiecesBlack){
+        //     value += 1;
+        // }
+        // else if(child.player == Player.BLACK && majorPiecesBlack > majorPiecesWhite){
+        //     value -= 1;
+        // }
+        // if(child.player == Player.WHITE && minorPiecesWhite > minorPiecesBlack){
+        //     value += 1;
+        // }
+        // else if(child.player == Player.BLACK && minorPiecesBlack > minorPiecesWhite){
+        //     value -= 1;
+        // }
+
+
         return (value);
 	
     }

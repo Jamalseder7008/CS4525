@@ -20,6 +20,13 @@ public class AlphaBetaBot{
 		// First, check if this node is a leaf node (i.e. the game is over)
 		// using Tree#state#isTerminal().  If so, simply return the utility of
 		// this state.
+		// double stand_pat = Utility.materialCalculator(root.state);
+		// if(stand_pat >= beta.utility){
+		// 	return new Result(root.state, beta.utility);
+		// }
+		// if(alpha.utility < stand_pat){
+		// 	alpha.utility = stand_pat;
+		// }
 		if( (root.state.over == true) || (depthLimit == root.state.turn &&  myTurn == root.state.player)) {
 			return new Result(root.state, Utility.materialCalculator(root.state));
 		}
@@ -62,7 +69,14 @@ public class AlphaBetaBot{
 		// First, check if this node is a leaf node (i.e. the game is over)
 		// isTerminal().  If so, simply return the utility of
 		// this state.
-		
+		// double stand_pat = Utility.materialCalculator(root.state);
+
+		// if(stand_pat >= beta.utility){
+		// 	return new Result(root.state, beta.utility);
+		// }
+		// if(alpha.utility < stand_pat){
+		// 	alpha.utility = stand_pat;
+		// }
 		if( (root.state.over == true) || (myTurn == root.state.player && depthLimit == root.state.turn)) { 
 			//first turn will be 0 so skip
 			return new Result(root.state,  Utility.materialCalculator(root.state));

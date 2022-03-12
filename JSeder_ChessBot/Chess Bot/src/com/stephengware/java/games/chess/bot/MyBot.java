@@ -37,7 +37,18 @@ public class MyBot extends Bot {
 
 	@Override
 	protected State chooseMove(State root) {
-		// This list will hold all the children nodes of the root.
+		// ArrayList<State> children = new ArrayList<State>();
+		// //This list will hold all the children nodes of the root.
+		// Iterator<State> iterator = root.next().iterator();
+		// //A child node has been breached
+		
+
+	
+		// while(!root.searchLimitReached() && iterator.hasNext()){
+		// 	// You can get the next unexplored child node with GameTree#getNextChild().
+		// 	State child = iterator.next();
+		// 	children.add(child);
+		// }
 
         Result head = new Result(root, Utility.materialCalculator(root));
 		//starting player of the algorithm
@@ -47,19 +58,18 @@ public class MyBot extends Bot {
             this.bestChild = AlphaBetaBot.findMax(head, new Result(head.state,Double.NEGATIVE_INFINITY), new Result(head.state,Double.POSITIVE_INFINITY), depthLimit, myTurn);
 			// System.out.println(this.bestChild.state.toString());
 			// System.out.println(this.bestChild.utility);
-			
 		} 
 		else{
 			int depthLimit = head.state.turn+2;
             this.bestChild = AlphaBetaBot.findMin(head, new Result(head.state,Double.NEGATIVE_INFINITY), new Result(head.state,Double.POSITIVE_INFINITY), depthLimit, myTurn);
-			
-
         }
 
+		Double utility = this.bestChild.utility;
 		State key = this.bestChild.state;
-		System.out.println(key.toString());
+		String board = this.bestChild.state.board.toString();
+		System.out.println(board);
+		System.out.println(utility);
 		Boolean hasMoreParents = true;
-		
 		while(hasMoreParents){
 			if(key.previous == root){
 				hasMoreParents = false;
@@ -68,6 +78,25 @@ public class MyBot extends Bot {
 			key = key.previous;
 			
 		}
+		System.out.println("\n");
+		System.out.println(key.board.toString());
+		// Double util = Utility.materialCalculator(key);
+		// if(key.over && !key.check){
+		// 	for(State child: children){
+		// 		if(root.player == Player.WHITE){
+		// 			if (key != child && Utility.materialCalculator(child) >= util){
+		// 				return child;
+		// 			}
+		// 		}
+		// 		else{
+		// 			if (key != child && Utility.materialCalculator(child) <= util){
+		// 				return child;
+		// 			}
+		// 		}
+				
+		// 	}
+		// }
+		
 		return key;
 		
 		
