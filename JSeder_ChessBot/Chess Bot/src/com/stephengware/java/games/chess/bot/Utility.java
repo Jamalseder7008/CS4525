@@ -46,20 +46,33 @@ public class Utility {
 
         if (child.check == true){
             if (child.player == Player.WHITE){
-                value -= 1;
+                value -= .75;
             }
             else{
-                value += 1; 
+                value += .75; 
             }
         
         }
         if (child.over){ //checks for checkmate..
-            if (child.previous.player == Player.WHITE){
-                value += Double.POSITIVE_INFINITY;
+            if(child.check){
+                if(child.player == Player.WHITE){
+                    value -= Double.POSITIVE_INFINITY;
+                }
+                else{
+                    value += Double.POSITIVE_INFINITY;
+                }
+                //this means checkmate for the current player
             }
-            else {
-                value += Double.NEGATIVE_INFINITY;
+            else{
+                if(child.player == Player.WHITE){
+                    value += 200;
+                }
+                else{
+                    value -= 200;
+                }
+                //this means stalemate
             }
+            
         }
         // Utility = forker(child);
         for (Piece piece : child.board){
@@ -79,6 +92,9 @@ public class Utility {
                     }
                     else if(child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
                         value += .75;
+                    }
+                    else if(child.board.pieceAt(0, piece.rank+1, piece.player, piece.getClass()) || child.board.pieceAt(7, piece.rank, piece.player, piece.getClass())){
+                        value += .25;
                     }
                     else{
                         value += .5;
@@ -104,6 +120,9 @@ public class Utility {
                     else if(child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
                         value -= .75;
                     }
+                    else if(child.board.pieceAt(0, piece.rank+1, piece.player, piece.getClass()) || child.board.pieceAt(7, piece.rank, piece.player, piece.getClass())){
+                        value -= .25;
+                    }
                     else{
                         value -= .5;
                     }
@@ -126,10 +145,10 @@ public class Utility {
                     }
 
                     if(child.turn > 10 && child.turn < 20){
-                        value += 3;
+                        value += 2;
                     }
                     if(child.turn > 20){
-                        value += 3;
+                        value += 2;
                     }
                     
 		
@@ -140,10 +159,10 @@ public class Utility {
                         value -= 0.5;
                     }
                     if(child.turn > 10 && child.turn < 20){
-                        value -= 3;
+                        value -= 2;
                     }
                     if(child.turn > 20){
-                        value -= 3;
+                        value -= 2;
                     }
 		
                 }
@@ -169,12 +188,35 @@ public class Utility {
             else if (piece.getClass() == Rook.class){
 		
                 if (piece.player == Player.WHITE){
-		
+                    boolean emptyFile = true;
                     value += 5;
+                    if(child.board.countPieces() < 18){
+                        value += 3;
+                    }
+                    for(int i = 0; i < 8; i++){
+                        if(child.board.pieceAt(piece.file, piece.rank+i)){
+                            emptyFile = false;
+                        }
+                    }
+                    if(emptyFile == true){
+                        value += 1;
+                    }
+                    
 		
                 } else{
-		
+                    boolean emptyFile = true;
                     value -= 5;
+                    if(child.board.countPieces() < 18){
+                        value -= 3;
+                    }
+                    for(int i = 0; i < 8; i++){
+                        if(child.board.pieceAt(piece.file, piece.rank+i)){
+                            emptyFile = false;
+                        }
+                    }
+                    if(emptyFile == true){
+                        value += 1;
+                    }
 		
                 }
 		
@@ -185,10 +227,16 @@ public class Utility {
                 if (piece.player == Player.WHITE){
 		
                     value += 9;
+                    if(child.turn > 11){
+                        value += 3;
+                    }
 		
                 } else{
 		
                     value -= 9;
+                    if(child.turn > 11){
+                        value += 3;
+                    }
 		
                 }
 		
@@ -197,14 +245,12 @@ public class Utility {
             else if (piece.getClass() == King.class){
 		
                 if (piece.player == Player.WHITE){
-                    // if (child.board.hasMoved(piece)){
-                    //     Utility += .20;
-                    // }
-                    // else{
-                    //     Utility += 0.30;
-                    // }
+                    
                     if(!child.board.hasMoved(piece)){
-                        value += 30;
+                        value += 21;
+                    }
+                    if(!child.board.pieceAt(piece.file, 0, Player.WHITE, piece.getClass())){
+                        value += 1;
                     }
                     else{
                         value += 20;
@@ -213,14 +259,8 @@ public class Utility {
 		
                 } else{
 
-                    // if (child.board.hasMoved(piece)){
-                    //     Utility -= .20;
-                    // }
-                    // else{
-                    //     Utility -= 0.30;
-                    // }
                     if(!child.board.hasMoved(piece)){
-                        value -= 30;
+                        value -= 21;
                     }
                     else{
                         value -= 20;
@@ -230,15 +270,15 @@ public class Utility {
             }
 		
         }
-        if(child.movesUntilDraw < 2){
-            if(child.player == Player.WHITE){
-                value -= 30;
-            }
-            else{
-                value += 30;  
-            }
+        // if(child.movesUntilDraw < 2){
+        //     if(child.player == Player.WHITE){
+        //         value -= 30;
+        //     }
+        //     else{
+        //         value += 30;  
+        //     }
            
-        }
+        // }
         
         if(whiteBishops == 2){
             value += 1;

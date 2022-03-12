@@ -30,9 +30,9 @@ public class Test {
 				//new Human(),
 				new MyBot(),
 				//new RandomBot(),
-				new GreedyBot(),
+				//new GreedyBot(),
 				//new NoviceBot(),
-				//new BeginnerBot(),
+				new BeginnerBot(),
 				//new IntermediateBot(),
 		};
 		Tournament tournament = new Tournament(2, bots);

@@ -37,6 +37,7 @@ public class Result {
     public final State state;
     public double utility;
     public final State parent;
+	public final State killerMove;
     
 
     
@@ -44,6 +45,8 @@ public class Result {
         this.state = state;
         this.utility = utility;
         this.parent = state.previous;
+		this.killerMove = state;
+		
         
     }
     
