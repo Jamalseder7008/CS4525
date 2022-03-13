@@ -228,6 +228,9 @@ public class Utility {
                 if (piece.player == Player.WHITE){
                     boolean emptyFile = true;
                     value += 5;
+                    if(!child.board.hasMoved(piece)){
+                        value += .5;
+                    }
                     // if(child.board.countPieces() < 22){
                     //     value += 3;
                     // }
@@ -245,6 +248,9 @@ public class Utility {
                 } else{
                     boolean emptyFile = true;
                     value -= 5;
+                    if(!child.board.hasMoved(piece)){
+                        value -= .5;
+                    }
                     // if(child.board.countPieces() < 22){
                     //     value -= 3;
                     // }
