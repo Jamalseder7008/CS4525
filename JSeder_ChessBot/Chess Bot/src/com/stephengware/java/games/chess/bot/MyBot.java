@@ -37,19 +37,7 @@ public class MyBot extends Bot {
 
 	@Override
 	protected State chooseMove(State root) {
-		// ArrayList<State> children = new ArrayList<State>();
-		// //This list will hold all the children nodes of the root.
-		// Iterator<State> iterator = root.next().iterator();
-		// //A child node has been breached
 		
-
-	
-		// while(!root.searchLimitReached() && iterator.hasNext()){
-		// 	// You can get the next unexplored child node with GameTree#getNextChild().
-		// 	State child = iterator.next();
-		// 	children.add(child);
-		// }
-
         Result head = new Result(root, Utility.materialCalculator(root));
 		//starting player of the algorithm
 		Player myTurn = head.state.player;
@@ -67,8 +55,8 @@ public class MyBot extends Bot {
 		Double utility = this.bestChild.utility;
 		State key = this.bestChild.state;
 		String board = this.bestChild.state.board.toString();
-		System.out.println(board);
-		System.out.println(utility);
+//		System.out.println(board);
+//		System.out.println(utility);
 		Boolean hasMoreParents = true;
 		while(hasMoreParents){
 			if(key.previous == root){
@@ -78,25 +66,9 @@ public class MyBot extends Bot {
 			key = key.previous;
 			
 		}
-		System.out.println("\n");
-		System.out.println(key.board.toString());
-		// Double util = Utility.materialCalculator(key);
-		// if(key.over && !key.check){
-		// 	for(State child: children){
-		// 		if(root.player == Player.WHITE){
-		// 			if (key != child && Utility.materialCalculator(child) >= util){
-		// 				return child;
-		// 			}
-		// 		}
-		// 		else{
-		// 			if (key != child && Utility.materialCalculator(child) <= util){
-		// 				return child;
-		// 			}
-		// 		}
-				
-		// 	}
-		// }
-		
+//		System.out.println("\n");
+//		System.out.println(key.board.toString());
+
 		return key;
 		
 		

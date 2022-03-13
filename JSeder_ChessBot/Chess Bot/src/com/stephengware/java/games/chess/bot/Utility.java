@@ -70,7 +70,12 @@ public class Utility {
                     // if(!child.board.hasMoved(piece)){
                     //     value += .5;
                     // }
+                    value += .01*(piece.rank-1);
                     if(child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
+                        value += .75;
+                    }
+                    else if(child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass()) && 
                             child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
                         value += .75;
                     }
@@ -80,6 +85,14 @@ public class Utility {
                     }
                     else if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass()) && 
                             child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
+                        value += .75;
+                    }
+                    else if(child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass())){
+                        value += .75;
+                    }
+                    else if(child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
                         value += .75;
                     }
                     else if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass()) && 
@@ -95,6 +108,7 @@ public class Utility {
                     else if(child.board.pieceAt(0, piece.rank+1, piece.player, piece.getClass()) || child.board.pieceAt(7, piece.rank, piece.player, piece.getClass())){
                         value += .125;
                     }
+                    
                     else{
                         value += .25;
                     }
@@ -109,6 +123,7 @@ public class Utility {
                     // if(!child.board.hasMoved(piece)){
                     //     value -= .5;
                     // }
+                    value -= .01*(6-piece.rank);
                     if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass()) && 
                             child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
                         value -= .75;
@@ -123,6 +138,14 @@ public class Utility {
                     }
                     else if(child.board.pieceAt(piece.file+1, piece.rank-1, piece.player, piece.getClass()) && 
                             child.board.pieceAt(piece.file+1, piece.rank+1, piece.player, piece.getClass())){
+                        value -= .75;
+                    }
+                    else if(child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass())){
+                        value -= .75;
+                    }
+                    else if(child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass()) && 
+                            child.board.pieceAt(piece.file-1, piece.rank-1, piece.player, piece.getClass())){
                         value -= .75;
                     }
                     else if(child.board.pieceAt(piece.file-1, piece.rank+1, piece.player, piece.getClass())){
